@@ -1,0 +1,153 @@
+<html>
+	<head>
+		<title>moeSlider</title>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+		<script type="text/javascript">
+		var c = window.console;
+			$.fn.moeSlide = function(con){
+				// 用户自定变量
+				var slideWidth = 0,	 //容器宽度
+					picWidth = 160,	//图片宽度
+					autoPlay = false,	//自动滚动开关
+					step = 10	, //自动滚动时间间隔
+					speed = 0,	//滚动速度
+					intro = false;	//是否有介绍文字
+
+				// 插件变量
+				var sDiv = $(this);
+				var sUl = $("ul",$(this));	 
+				var sLi = $("li",sUl);
+				var sLeft = $(".goLeft"),sRight = $(".goRight");
+				var me = this;
+				var scrollTimer = null;
+
+			 	slideWidth = con.slideWidth;
+				autoPlay = arguments[0].autoPlay;
+				speed = arguments[0].speed;
+			 	picWidth = slideWidth/4;
+
+ 				function init(){
+
+ 					$(me).css({
+ 						'width': slideWidth+"px",
+ 						'height':'150px',
+						  'overflow':'hidden',
+						  'position':'relative'
+ 					});
+
+ 					$(sUl).css({
+ 						'width':sLi.length*(picWidth+5)+ "px",
+ 						'position': 'absolute',
+ 						'z-index':2,
+						'left': 0,
+						'top':0,
+						'margin': 0,
+					    'padding': 0
+ 					});
+ 					$(sLi).each(function(){
+ 						$(this).css({
+ 							 'visibility': 'visible',
+							  'position': 'absolute',
+							  'list-style':'none',
+							  'left':0,
+							  'top':0,
+							  'z-index':1,
+
+							  'transition':'all 1s',
+							  '-webkit-transition':'all 1s',
+							  '-moz-transition':'all 1s',
+							  '-o-transition':'all 1s',
+							  '-ms-transition':'all 1s'
+ 						});
+ 					})
+
+
+ 					$(sLi).find("img").each(function(){
+ 						$(this).css("width",picWidth+"px");
+ 					});
+
+ 					if(autoPlay) autoscroll();
+
+ 			 
+
+ 				}
+
+ 				init();
+ 					
+ 				function autoscroll(){
+ 					var s = sLi.length; 
+ 					var scrollTimer = setInterval(sc,step);
+ 		 
+
+ 					sLi.each(function(i){
+ 							$(this).css("left",i*picWidth + "px");
+ 							$(this).css("opacity",0.8);
+ 					});
+
+ 				 
+	 					$(sUl).mouseover(function(){
+									clearInterval(scrollTimer);
+									$(this).css("cursor","hand");
+									$(this).find("li").each(function(){
+										$(this).mouseover(function(){
+											$(this).css("opacity",1);
+										})
+									})
+								});
+						$(sUl).mouseout(function(){
+							 scrollTimer = setInterval(sc,step);
+							 $(this).css("cursor"," ");
+							 $(this).find("li").each(function(){
+										$(this).mouseout(function(){
+											$(this).css("opacity",0.8);
+										})
+									})
+						});
+			 
+ 					function sc(){
+ 						var ulPosition = $(sUl).position().left;
+ 						var ind =  (parseInt(-ulPosition / (picWidth)))-1;
+ 					 
+
+ 						$(sUl).css("left",ulPosition-speed+"px");
+ 						if(	ulPosition!==0 && 
+ 							-ulPosition == (picWidth) * (parseInt(-ulPosition / (picWidth))) &&
+ 							$("li",sUl).length < sLi.length*2)
+ 						{
+ 							sLi.eq(ind).clone().appendTo(sUl).css("left",s*picWidth);
+ 							s++;
+ 						}
+
+						if(-ulPosition == sLi.length * (picWidth)){
+						 	$(sUl).css("left",0);
+						 	console.log(ulPosition);
+						}
+ 					}
+ 				}
+			};
+	 
+		</script>
+		<script type="text/javascript">
+			$(function(){
+				$(".scroll").moeSlide({
+					slideWidth:720,
+					autoPlay:true,
+					speed:1
+				});
+			})
+		</script>
+	</head>
+	<body>
+		<center>
+			<div class="scroll">
+			  <ul>
+			    <li><img src="http://imgsrc.baidu.com/forum/pic/item/ba19c833c895d14316c4f9ad73f0820258af07c8.jpg" alt=""></li>
+			    <li><img src="http://imgsrc.baidu.com/forum/pic/item/ba19c833c895d14316c4f9ad73f0820258af07c8.jpg" alt=""></li>
+			    <li><img src="http://imgsrc.baidu.com/forum/pic/item/ba19c833c895d14316c4f9ad73f0820258af07c8.jpg" alt="1"></li>
+			    <li><img src="http://imgsrc.baidu.com/forum/pic/item/ba19c833c895d14316c4f9ad73f0820258af07c8.jpg" alt=""></li>
+			    <li><img src="http://imgsrc.baidu.com/forum/pic/item/ba19c833c895d14316c4f9ad73f0820258af07c8.jpg" alt=""></li>
+			  </ul>
+			</div>
+		</center>
+	</body>
+</html>
